@@ -3,6 +3,7 @@ WIDTH = 800
 HEIGHT = 600
 FPS = 60
 TITLE = "My Game"
+TILE_SIZE = 64
 
 WORLD_MAP = [
     ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
