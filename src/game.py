@@ -5,6 +5,7 @@ import pygame
 import sys
 
 from bullet import Bullet
+from level import Level
 from player import Player
 from settings import *
 
@@ -12,6 +13,7 @@ from settings import *
 class Game:
     def __init__(self):
         # initialize pygame
+        self.clock = pygame.time.Clock()
         pygame.init()
 
         # initialize the screen
@@ -26,11 +28,22 @@ class Game:
 
         # initialize the bullet
         self.bullets = []
+        self.is_shooting = False
+
+        # initialize the level
+        self.level = Level()
+
+        # some settings
+        self.font = pygame.font.Font(None, 30)
 
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_LEFT:
+                self.is_shooting = True
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == pygame.BUTTON_LEFT:
+                self.is_shooting = False
         return True
 
     def update(self):
@@ -41,14 +54,12 @@ class Game:
         self.player.move(keys)
 
         # shoot a bullet
-        if keys[pygame.K_SPACE]:
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            bullet = Bullet(self.player.x + 25, self.player.y + 25, math.atan2(mouse_y - self.player.y, mouse_x -
-                                                                               self.player.x), 10)
-            self.bullets.append(bullet)
 
         for bullet in self.bullets:
             bullet.update()
+
+        if self.is_shooting:
+            self.player.shoot(self.bullets)
 
         return True
 
@@ -63,7 +74,9 @@ class Game:
         for bullet in self.bullets:
             bullet.draw(self.screen)
 
-        pygame.display.flip()
+        # draw the fps
+        fps_text = self.font.render("FPS: {}".format(int(self.clock.get_fps())), True, (255, 255, 255))
+        self.screen.blit(fps_text, (100, 10))
 
     def run(self, player_speed=None):
         # initialize the game loop
@@ -71,7 +84,7 @@ class Game:
         running = True
 
         while running:
-            clock.tick(FPS)
+            self.clock.tick(FPS)
 
             running = self.handle_events()
 
@@ -79,5 +92,7 @@ class Game:
                 break
 
             self.draw()
+
+            pygame.display.flip()
 
         pygame.quit()

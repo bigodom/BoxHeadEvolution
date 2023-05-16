@@ -2,6 +2,7 @@ import math
 
 import pygame
 
+
 class Bullet:
     def __init__(self, x, y, angle, speed):
         self.x = x
@@ -15,3 +16,4 @@ class Bullet:
 
     def draw(self, screen):
         pygame.draw.circle(screen, 'White', (int(self.x), int(self.y)), 5)
+
